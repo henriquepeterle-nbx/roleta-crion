@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roleta Cirion</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-screen="home">
+    <div class="page-backdrop" aria-hidden="true"></div>
+
+    <main class="app-shell">
+      <section class="screen screen--active" id="homeScreen" aria-labelledby="homeTitle">
+        <div class="hero-card">
+          <span class="eyebrow">Experiência interativa Cirion</span>
+          <button
+            class="logo-trigger logo-trigger--surface"
+            id="startTrigger"
+            type="button"
+            aria-label="Começar participação na roleta Cirion"
+          >
+            <span class="logo-clip logo-clip--hero">
+              <img
+                class="brand-logo brand-logo--hero"
+                src="./assets/logo-blue-bg.png"
+                alt="Logo da Cirion"
+              />
+            </span>
+          </button>
+          <h1 id="homeTitle">Toque na logo para participar</h1>
+          <p class="hero-copy">
+            Faça seu cadastro, escolha seu interesse e gire a roleta para descobrir sua
+            chance do dia.
+          </p>
+        </div>
+      </section>
+
+      <section class="screen" id="registerScreen" aria-labelledby="registerTitle">
+        <div class="panel panel--form">
+          <h2 id="registerTitle">Preencha seus dados para girar a roleta</h2>
+
+          <form class="form-card" id="registerForm" novalidate>
+            <label class="field">
+              <span>Nome completo</span>
+              <input id="fullName" name="fullName" type="text" autocomplete="name" required />
+            </label>
+
+            <label class="field">
+              <span>Telefone</span>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                inputmode="numeric"
+                autocomplete="tel"
+                maxlength="15"
+                required
+              />
+            </label>
+
+            <label class="field">
+              <span>E-mail</span>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </label>
+
+            <fieldset class="choice-group">
+              <legend>Você tem interesse em Fiber ou Data Center?</legend>
+              <label class="choice-pill">
+                <input type="radio" name="interest" value="FIBER" required />
+                <span>FIBER</span>
+              </label>
+              <label class="choice-pill">
+                <input type="radio" name="interest" value="DATA CENTER" />
+                <span>DATA CENTER</span>
+              </label>
+            </fieldset>
+
+            <p class="form-feedback" id="registerFeedback" hidden></p>
+
+            <div class="form-actions">
+              <button class="secondary-button" id="backHomeButton" type="button">
+                Voltar
+              </button>
+              <button class="primary-button" id="registerSubmitButton" type="submit">
+                Ir para a roleta
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="screen" id="wheelScreen" aria-labelledby="wheelTitle">
+        <div class="wheel-layout">
+          <div class="wheel-stage-card">
+            <span class="eyebrow eyebrow--dark">Roleta Cirion</span>
+            <h2 id="wheelTitle">Toque na roleta para girar</h2>
+
+            <div class="wheel-stage">
+              <div class="wheel-pointer" aria-hidden="true"></div>
+              <button
+                class="wheel"
+                id="wheelButton"
+                type="button"
+                aria-label="Girar a roleta"
+              >
+                <div class="wheel-rotor" id="wheelRotor">
+                  <div class="wheel-face" id="wheelFace"></div>
+                  <div class="wheel-labels" id="wheelLabels" aria-hidden="true"></div>
+                </div>
+                <div class="wheel-center">
+                  <strong>Girar</strong>
+                </div>
+              </button>
+            </div>
+
+            <div class="status-note" id="statusNote">
+              Cadastre-se, toque na roleta e descubra o seu resultado.
+            </div>
+
+            <div class="status-actions">
+              <button class="secondary-button" id="restartFlowButton" type="button">
+                Reiniciar
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section class="overlay" id="overlay" hidden aria-live="polite">
+      <div class="overlay-card">
+        <span class="eyebrow eyebrow--dark" id="overlayEyebrow">Resultado</span>
+        <h3 id="overlayTitle">Resultado da rodada</h3>
+        <p id="overlayDescription"></p>
+
+        <form class="quiz-form" id="quizForm" hidden>
+          <p class="quiz-prompt" id="quizPrompt"></p>
+          <div class="quiz-options" id="quizOptions"></div>
+        </form>
+
+        <div class="overlay-feedback" id="overlayFeedback" hidden></div>
+
+        <div class="overlay-actions">
+          <button class="secondary-button" id="closeOverlayButton" type="button" hidden>
+            Encerrar
+          </button>
+          <button class="primary-button" id="overlayActionButton" type="button" hidden>
+            Continuar
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="celebration" id="celebration" hidden aria-hidden="true"></section>
+
+    <section class="admin-panel" id="adminPanel" hidden>
+      <div class="admin-panel__copy">
+        <span class="eyebrow eyebrow--dark">Admin</span>
+        <strong id="adminStats">0 participações salvas</strong>
+      </div>
+      <div class="admin-panel__actions">
+        <button class="secondary-button" id="downloadCsvButton" type="button">
+          Exportar CSV
+        </button>
+        <button class="secondary-button" id="resetAlexaButton" type="button">
+          Resetar Alexa do dia
+        </button>
+        <button class="secondary-button" id="clearDataButton" type="button">
+          Limpar dados
+        </button>
+      </div>
+    </section>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
