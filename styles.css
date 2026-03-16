@@ -12,6 +12,9 @@
   --radius-md: 18px;
   --segment-size: 45deg;
   --spin-duration: 5.4s;
+  --viewport-padding: clamp(20px, 3vw, 36px);
+  --floating-ui-offset: calc(92px + env(safe-area-inset-bottom, 0px));
+  --wheel-size: clamp(280px, min(82vw, calc(100dvh - 230px)), 660px);
   font-family: "Avenir Next", "Montserrat", "Segoe UI", sans-serif;
 }
 
@@ -23,7 +26,7 @@
 
 html,
 body {
-  min-height: 100%;
+  min-height: 100dvh;
 }
 
 [hidden] {
@@ -100,10 +103,10 @@ button {
 .app-shell {
   position: relative;
   z-index: 1;
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: clamp(20px, 3vw, 36px);
+  padding: var(--viewport-padding) var(--viewport-padding) var(--floating-ui-offset);
 }
 
 .screen {
@@ -136,11 +139,11 @@ button {
 
 .hero-card {
   width: min(900px, 100%);
-  min-height: min(62vh, 580px);
+  min-height: min(58dvh, 560px);
   display: grid;
   justify-items: center;
   align-content: center;
-  gap: 10px;
+  gap: clamp(8px, 1.4vh, 12px);
   text-align: center;
   padding: clamp(24px, 5vw, 48px);
   background:
@@ -216,7 +219,7 @@ button {
 }
 
 .logo-clip--hero {
-  width: min(52vw, 480px);
+  width: min(52vw, 58vh, 480px);
   aspect-ratio: 16 / 9;
   border-radius: 28px;
   box-shadow: 0 24px 50px rgba(2, 8, 38, 0.32);
@@ -411,7 +414,7 @@ button {
   width: min(940px, 100%);
   display: grid;
   justify-items: center;
-  gap: 18px;
+  gap: clamp(12px, 2vh, 18px);
   padding: clamp(18px, 3vw, 28px);
 }
 
@@ -425,8 +428,8 @@ button {
   display: grid;
   place-items: center;
   width: 100%;
-  margin-top: 10px;
-  padding-top: 38px;
+  margin-top: clamp(4px, 1vh, 10px);
+  padding-top: clamp(28px, 4vh, 38px);
 }
 
 .wheel-pointer {
@@ -442,7 +445,7 @@ button {
 
 .wheel {
   position: relative;
-  width: min(82vw, 660px);
+  width: var(--wheel-size);
   aspect-ratio: 1;
   border: 0;
   border-radius: 50%;
@@ -498,7 +501,7 @@ button {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 136px;
+  width: clamp(92px, calc(var(--wheel-size) * 0.21), 136px);
   display: grid;
   gap: 4px;
   justify-items: center;
@@ -506,7 +509,7 @@ button {
   transform:
     translate(-50%, -50%)
     rotate(calc(var(--index) * var(--segment-size)))
-    translateY(calc(-1 * min(32vw, 228px)));
+    translateY(calc(-1 * clamp(118px, calc(var(--wheel-size) * 0.345), 228px)));
 }
 
 .wheel-label span {
@@ -521,8 +524,8 @@ button {
 .wheel-center {
   position: absolute;
   inset: 50%;
-  width: 166px;
-  height: 166px;
+  width: clamp(112px, calc(var(--wheel-size) * 0.252), 166px);
+  height: clamp(112px, calc(var(--wheel-size) * 0.252), 166px);
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: linear-gradient(160deg, white, #dfe8ff);
@@ -537,7 +540,7 @@ button {
 }
 
 .wheel-center strong {
-  font-size: 1.68rem;
+  font-size: clamp(1.12rem, calc(var(--wheel-size) * 0.04), 1.68rem);
   letter-spacing: -0.03em;
   text-transform: uppercase;
 }
@@ -713,6 +716,10 @@ body.is-admin {
 }
 
 @media (max-width: 980px) {
+  :root {
+    --wheel-size: clamp(250px, min(92vw, calc(100dvh - 250px)), 560px);
+  }
+
   body {
     overflow: auto;
   }
@@ -720,7 +727,7 @@ body.is-admin {
   .app-shell {
     min-height: 100dvh;
     align-items: start;
-    padding-block: 20px 110px;
+    padding-block: 20px var(--floating-ui-offset);
   }
 
   .panel,
@@ -741,21 +748,14 @@ body.is-admin {
   .hero-card {
     min-height: calc(100dvh - 40px);
   }
-
-  .wheel {
-    width: min(92vw, 560px);
-  }
-
-  .wheel-label {
-    width: 104px;
-    transform:
-      translate(-50%, -50%)
-      rotate(calc(var(--index) * var(--segment-size)))
-      translateY(calc(-1 * min(36vw, 194px)));
-  }
 }
 
 @media (max-width: 640px) {
+  :root {
+    --floating-ui-offset: calc(80px + env(safe-area-inset-bottom, 0px));
+    --wheel-size: clamp(220px, min(92vw, calc(100dvh - 240px)), 420px);
+  }
+
   .language-toggle {
     bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     min-height: 42px;
@@ -774,15 +774,6 @@ body.is-admin {
     font-size: clamp(2.2rem, 12vw, 3.5rem);
   }
 
-  .wheel-center {
-    width: 132px;
-    height: 132px;
-  }
-
-  .wheel-center strong {
-    font-size: 1.34rem;
-  }
-
   .status-note {
     width: 100%;
   }
@@ -792,5 +783,23 @@ body.is-admin {
     right: 12px;
     bottom: 12px;
     padding: 12px;
+  }
+}
+
+@media (max-height: 760px) {
+  :root {
+    --wheel-size: clamp(220px, min(80vw, calc(100dvh - 180px)), 520px);
+  }
+
+  body {
+    overflow: auto;
+  }
+
+  .app-shell {
+    align-items: start;
+  }
+
+  .hero-card {
+    min-height: auto;
   }
 }
