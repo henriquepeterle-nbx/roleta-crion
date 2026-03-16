@@ -31,32 +31,13 @@
 
           <div class="registration-stage">
             <div class="registration-copy">
-              <span class="eyebrow eyebrow--light" id="formEyebrow">
-                Cirion interactive experience
-              </span>
-              <h1 id="formTitle">Register to spin the wheel</h1>
+              <h1 class="sr-only" id="formTitle">Register to spin the wheel</h1>
               <p class="registration-copy__lead" id="formLead">
                 Complete your details and then spin the Cirion prize wheel.
               </p>
-              <div class="registration-copy__blocks">
-                <p id="formBodyOne">
-                  Meet the Cirion team and learn more about digital infrastructure solutions for
-                  your business.
-                </p>
-                <p id="formBodyTwo">
-                  After registration, the wheel opens immediately and the result appears on screen.
-                </p>
-              </div>
             </div>
 
             <div class="registration-panel">
-              <div class="registration-panel__head">
-                <span class="eyebrow" id="formPanelEyebrow">Register to learn more</span>
-                <p class="registration-panel__note" id="formPanelNote">
-                  Required fields are marked with *
-                </p>
-              </div>
-
               <form class="registration-form" id="leadForm" novalidate>
                 <div class="field-grid field-grid--two">
                   <label class="field" data-field-name="firstName">
@@ -193,7 +174,7 @@
             <h2 id="wheelTitle">Tap the wheel to spin</h2>
 
             <div class="wheel-stage">
-              <div class="wheel-pointer" aria-hidden="true"></div>
+              <div class="wheel-pointer" id="wheelPointer" aria-hidden="true"></div>
               <button class="wheel" id="wheelButton" type="button" aria-label="Spin the wheel">
                 <div class="wheel-rotor" id="wheelRotor">
                   <div class="wheel-face"></div>
@@ -230,7 +211,6 @@
     <section class="keyboard" id="virtualKeyboard" hidden aria-label="Virtual keyboard">
       <div class="keyboard-shell" id="keyboardShell">
         <div class="keyboard-header">
-          <p class="keyboard-title" id="keyboardTitle">Virtual keyboard</p>
           <button class="keyboard-close" id="keyboardCloseButton" type="button">Done</button>
         </div>
         <div class="keyboard-keys" id="keyboardKeys"></div>

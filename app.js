@@ -37,7 +37,7 @@ const COPY = {
       logoAlt: "Cirion logo",
       eyebrow: "Cirion interactive experience",
       title: "Register to spin the wheel",
-      lead: "Complete your details and then spin the Cirion prize wheel.",
+      lead: "Complete your details and then spin the wheel.",
       bodyOne:
         "Meet the Cirion team and learn more about digital infrastructure solutions for your business.",
       bodyTwo:
@@ -116,7 +116,7 @@ const COPY = {
       specialDescription: "Please speak with the Cirion team to receive your prize.",
       alexaTitle: "YOU WON AN ALEXA",
       alexaDescription: "Please speak with the Cirion team to receive your prize.",
-      newEntryAction: "NEW ENTRY",
+      newEntryAction: "NEW GAME",
       spinAgainAction: "SPIN AGAIN",
     },
     keyboard: {
@@ -143,7 +143,7 @@ const COPY = {
       logoAlt: "Logo da Cirion",
       eyebrow: "Experiência interativa Cirion",
       title: "Cadastre-se para girar a roleta",
-      lead: "Preencha seus dados e depois gire a roleta de prêmios da Cirion.",
+      lead: "Preencha seus dados e depois gire a roleta.",
       bodyOne:
         "Conheça o time da Cirion e saiba mais sobre soluções de infraestrutura digital para a sua empresa.",
       bodyTwo:
@@ -222,7 +222,7 @@ const COPY = {
       specialDescription: "Fale com a equipe da Cirion para retirar o seu prêmio.",
       alexaTitle: "VOCÊ GANHOU UMA ALEXA",
       alexaDescription: "Fale com a equipe da Cirion para retirar o seu prêmio.",
-      newEntryAction: "NOVO CADASTRO",
+      newEntryAction: "NOVO JOGO",
       spinAgainAction: "GIRAR DE NOVO",
     },
     keyboard: {
@@ -272,13 +272,8 @@ const elements = {
   },
   languageToggle: document.querySelector("#languageToggle"),
   formLogo: document.querySelector("#formLogo"),
-  formEyebrow: document.querySelector("#formEyebrow"),
   formTitle: document.querySelector("#formTitle"),
   formLead: document.querySelector("#formLead"),
-  formBodyOne: document.querySelector("#formBodyOne"),
-  formBodyTwo: document.querySelector("#formBodyTwo"),
-  formPanelEyebrow: document.querySelector("#formPanelEyebrow"),
-  formPanelNote: document.querySelector("#formPanelNote"),
   leadForm: document.querySelector("#leadForm"),
   firstName: document.querySelector("#firstName"),
   lastName: document.querySelector("#lastName"),
@@ -299,6 +294,7 @@ const elements = {
   ),
   wheelEyebrow: document.querySelector("#wheelEyebrow"),
   wheelTitle: document.querySelector("#wheelTitle"),
+  wheelPointer: document.querySelector("#wheelPointer"),
   wheelButton: document.querySelector("#wheelButton"),
   wheelCenterLabel: document.querySelector("#wheelCenterLabel"),
   wheelRotor: document.querySelector("#wheelRotor"),
@@ -312,7 +308,6 @@ const elements = {
   celebration: document.querySelector("#celebration"),
   virtualKeyboard: document.querySelector("#virtualKeyboard"),
   keyboardShell: document.querySelector("#keyboardShell"),
-  keyboardTitle: document.querySelector("#keyboardTitle"),
   keyboardCloseButton: document.querySelector("#keyboardCloseButton"),
   keyboardKeys: document.querySelector("#keyboardKeys"),
 };
@@ -367,13 +362,8 @@ function applyLanguage() {
   elements.languageToggle.textContent = t("languageToggle");
   elements.languageToggle.setAttribute("aria-label", t("languageToggleAria"));
   elements.formLogo.setAttribute("alt", t("form.logoAlt"));
-  elements.formEyebrow.textContent = t("form.eyebrow");
   elements.formTitle.textContent = t("form.title");
   elements.formLead.textContent = t("form.lead");
-  elements.formBodyOne.textContent = t("form.bodyOne");
-  elements.formBodyTwo.textContent = t("form.bodyTwo");
-  elements.formPanelEyebrow.textContent = t("form.panelEyebrow");
-  elements.formPanelNote.textContent = t("form.panelNote");
   elements.marketingConsentLabel.textContent = t("form.marketingConsent");
   elements.privacyAcceptedLabel.textContent = t("form.privacyAccepted");
   elements.wheelEyebrow.textContent = t("wheel.eyebrow");
@@ -381,7 +371,6 @@ function applyLanguage() {
   elements.wheelButton.setAttribute("aria-label", t("wheel.spinAria"));
   elements.wheelCenterLabel.textContent = t("wheel.spinLabel");
   elements.virtualKeyboard.setAttribute("aria-label", t("keyboard.title"));
-  elements.keyboardTitle.textContent = t("keyboard.title");
   elements.keyboardCloseButton.textContent = t("keyboard.done");
 
   renderFieldPlaceholders();
@@ -735,7 +724,7 @@ function renderKeyboard() {
   rows.forEach((row) => {
     const rowNode = document.createElement("div");
     rowNode.className = "keyboard-row";
-    rowNode.style.setProperty("--columns", String(row.length));
+    rowNode.style.setProperty("--columns", String(getKeyboardColumnCount(row)));
 
     row.forEach((keyConfig) => {
       const button = document.createElement("button");
@@ -773,13 +762,11 @@ function getKeyboardRows() {
       ["1", "2", "3"],
       ["4", "5", "6"],
       ["7", "8", "9"],
-      ["0", { action: "backspace", size: "wide" }],
-      [{ action: "clear", size: "wide" }, { action: "done", size: "wide" }],
+      [{ action: "clear" }, "0", { action: "backspace" }],
     ];
   }
 
   const alphaRows = [
-    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
     buildAlphaRow(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]),
     buildAlphaRow(["a", "s", "d", "f", "g", "h", "j", "k", "l"]),
     [
@@ -791,15 +778,36 @@ function getKeyboardRows() {
 
   if (state.keyboardMode === "email") {
     return [
+      ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
       ...alphaRows,
-      ["@", ".", "-", "_", ".com", { action: "space", size: "xl" }, { action: "done", size: "wide" }],
+      ["@", ".", "-", "_", ".com", { action: "space", size: "xl" }],
     ];
   }
 
   return [
     ...alphaRows,
-    [",", ".", "-", "'", { action: "space", size: "xl" }, { action: "done", size: "wide" }],
+    [",", ".", "-", "'", { action: "space", size: "xl" }],
   ];
+}
+
+function getKeyboardColumnCount(row) {
+  return row.reduce((total, keyConfig) => total + getKeyboardKeySpan(keyConfig), 0);
+}
+
+function getKeyboardKeySpan(keyConfig) {
+  if (typeof keyConfig === "string") {
+    return 1;
+  }
+
+  if (keyConfig.size === "xl") {
+    return 3;
+  }
+
+  if (keyConfig.size === "wide") {
+    return 2;
+  }
+
+  return 1;
 }
 
 function buildAlphaRow(keys) {
@@ -1015,6 +1023,7 @@ function handleSpin() {
   state.isSpinning = true;
 
   elements.wheelButton.classList.add("is-disabled");
+  elements.wheelPointer.classList.add("is-spinning");
   playSpinSound();
   setStatusNote("status.spinning", { count: state.spinCount });
 
@@ -1035,6 +1044,7 @@ function handleSpin() {
   window.setTimeout(() => {
     state.isSpinning = false;
     elements.wheelButton.classList.remove("is-disabled");
+    elements.wheelPointer.classList.remove("is-spinning");
     stopSpinSound();
     handleSpinOutcome(chosen.segment);
   }, spinDurationMs);
@@ -1227,6 +1237,7 @@ function resetRound() {
   stopSpinSound();
   clearCelebration();
   elements.wheelButton.classList.remove("is-disabled");
+  elements.wheelPointer.classList.remove("is-spinning");
   elements.wheelRotor.style.transition = "none";
   elements.wheelRotor.style.transform = "rotate(0deg)";
   setStatusNote(getReadyStatusKey());
