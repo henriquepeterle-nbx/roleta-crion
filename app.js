@@ -6,45 +6,45 @@ const WHEEL_SEGMENTS = [
   {
     id: "special-1",
     type: "special",
-    label: ["Special", "Gift"],
+    label: ["SPECIAL", "GIFT"],
     prize: "a Cirion special gift",
   },
   {
     id: "no-luck-1",
     type: "noLuck",
-    label: ["Not this", "time"],
+    label: ["NOT THIS", "TIME"],
   },
   {
     id: "replay-1",
     type: "replay",
-    label: ["Spin", "Again"],
+    label: ["SPIN", "AGAIN"],
   },
   {
     id: "no-luck-2",
     type: "noLuck",
-    label: ["Not this", "time"],
+    label: ["NOT THIS", "TIME"],
   },
   {
     id: "special-2",
     type: "special",
-    label: ["Special", "Gift"],
+    label: ["SPECIAL", "GIFT"],
     prize: "a Cirion special gift",
   },
   {
     id: "no-luck-3",
     type: "noLuck",
-    label: ["Not this", "time"],
+    label: ["NOT THIS", "TIME"],
   },
   {
     id: "alexa-1",
     type: "alexa",
-    label: ["Alexa", "of the Day"],
+    label: ["ALEXA", "OF THE DAY"],
     prize: "an Amazon Alexa",
   },
   {
     id: "replay-2",
     type: "replay",
-    label: ["Spin", "Again"],
+    label: ["SPIN", "AGAIN"],
   },
 ];
 
@@ -70,8 +70,6 @@ const elements = {
   wheelRotor: document.querySelector("#wheelRotor"),
   wheelLabels: document.querySelector("#wheelLabels"),
   statusNote: document.querySelector("#statusNote"),
-  playAgainButton: document.querySelector("#playAgainButton"),
-  backHomeButton: document.querySelector("#backHomeButton"),
   overlay: document.querySelector("#overlay"),
   overlayEyebrow: document.querySelector("#overlayEyebrow"),
   overlayTitle: document.querySelector("#overlayTitle"),
@@ -100,19 +98,6 @@ function bindEvents() {
   elements.wheelButton.addEventListener("click", () => {
     unlockAudio();
     handleSpin();
-  });
-
-  elements.playAgainButton.addEventListener("click", () => {
-    unlockAudio();
-    clearReturnTimers();
-    hideOverlay();
-    resetRound();
-    setStatusNote(getReadyMessage("Ready for another spin."));
-    window.requestAnimationFrame(() => elements.wheelButton.focus());
-  });
-
-  elements.backHomeButton.addEventListener("click", () => {
-    finalizeRoundAndReturn();
   });
 
   elements.overlayActionButton.addEventListener("click", handleOverlayAction);
@@ -149,7 +134,7 @@ function handleSpin() {
     return;
   }
 
-  const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+  const chosen = pickWeightedCandidate(candidates);
   state.spinCount += 1;
   state.isSpinning = true;
   state.activeOutcome = chosen.segment;
@@ -190,6 +175,40 @@ function canLandOnSegment(segment) {
   return true;
 }
 
+function pickWeightedCandidate(candidates) {
+  let totalWeight = 0;
+
+  for (const candidate of candidates) {
+    totalWeight += getSegmentWeight(candidate.segment);
+  }
+
+  let threshold = Math.random() * totalWeight;
+
+  for (const candidate of candidates) {
+    threshold -= getSegmentWeight(candidate.segment);
+
+    if (threshold <= 0) {
+      return candidate;
+    }
+  }
+
+  return candidates[candidates.length - 1];
+}
+
+function getSegmentWeight(segment) {
+  switch (segment.type) {
+    case "special":
+      return 2;
+    case "replay":
+      return 2;
+    case "alexa":
+      return 1;
+    case "noLuck":
+    default:
+      return 1;
+  }
+}
+
 function handleSpinOutcome(outcome) {
   switch (outcome.type) {
     case "noLuck":
@@ -205,12 +224,11 @@ function handleSpinOutcome(outcome) {
     case "replay":
       showOverlay({
         eyebrow: "Bonus spin",
-        title: "Spin again",
+        title: "SPIN AGAIN",
         description: "You earned one extra spin. Tap the button below to spin again.",
-        actionLabel: "Spin Again",
+        actionLabel: "SPIN AGAIN",
         actionMode: "replay",
       });
-      setStatusNote("Bonus spin unlocked. Tap Spin Again to keep playing.");
       break;
 
     case "special":
@@ -218,9 +236,8 @@ function handleSpinOutcome(outcome) {
       triggerCelebration();
       showFinalOverlay({
         eyebrow: "Winner",
-        title: "You won a special gift",
+        title: "YOU WON A SPECIAL GIFT",
         description: "Take your prize with the Cirion team.",
-        statusMessage: "Winner! You got a Cirion special gift.",
       });
       break;
 
@@ -230,9 +247,8 @@ function handleSpinOutcome(outcome) {
       triggerCelebration();
       showFinalOverlay({
         eyebrow: "Winner",
-        title: "You won an Alexa",
+        title: "YOU WON AN ALEXA",
         description: "Take your prize with the Cirion team.",
-        statusMessage: "Winner! You got the Alexa of the Day.",
       });
       break;
 
@@ -241,15 +257,15 @@ function handleSpinOutcome(outcome) {
   }
 }
 
-function showFinalOverlay({ eyebrow, title, description, statusMessage }) {
+function showFinalOverlay({ eyebrow, title, description }) {
   showOverlay({
     eyebrow,
     title,
     description,
-    actionLabel: "Play Again",
+    actionLabel: "PLAY AGAIN",
     actionMode: "playAgain",
   });
-  scheduleReturnHome(statusMessage);
+  scheduleReturnHome();
 }
 
 function showOverlay({ eyebrow, title, description, actionLabel, actionMode }) {
@@ -276,45 +292,21 @@ function handleOverlayAction() {
   hideOverlay();
 
   if (mode === "replay") {
-    setStatusNote("Extra spin ready. Tap the wheel to spin again.");
+    window.requestAnimationFrame(() => elements.wheelButton.focus());
     return;
   }
 
   if (mode === "playAgain") {
     resetRound();
-    setStatusNote(getReadyMessage("Ready for another spin."));
     window.requestAnimationFrame(() => elements.wheelButton.focus());
   }
 }
 
-function scheduleReturnHome(baseMessage) {
+function scheduleReturnHome() {
   clearReturnTimers();
-
-  const totalSeconds = 5;
-  let secondsRemaining = totalSeconds;
-  updateReturnCountdownMessage(baseMessage, secondsRemaining);
-
-  state.returnCountdownTimer = window.setInterval(() => {
-    secondsRemaining -= 1;
-
-    if (secondsRemaining <= 0) {
-      window.clearInterval(state.returnCountdownTimer);
-      return;
-    }
-
-    updateReturnCountdownMessage(baseMessage, secondsRemaining);
-  }, 1000);
-
   state.returnTimer = window.setTimeout(() => {
     finalizeRoundAndReturn();
-  }, totalSeconds * 1000);
-}
-
-function updateReturnCountdownMessage(baseMessage, secondsRemaining) {
-  const label = secondsRemaining === 1 ? "second" : "seconds";
-  setStatusNote(
-    `${baseMessage} Tap Play Again or wait ${secondsRemaining} ${label} to go back to the start screen.`,
-  );
+  }, 5000);
 }
 
 function finalizeRoundAndReturn() {
@@ -360,6 +352,10 @@ function showScreen(screenName) {
 }
 
 function setStatusNote(message) {
+  if (!elements.statusNote) {
+    return;
+  }
+
   elements.statusNote.textContent = message;
 }
 
@@ -404,8 +400,7 @@ function markAlexaAsClaimed() {
 
 function getDesiredRotationForSegment(segmentIndex) {
   const segmentSize = 360 / WHEEL_SEGMENTS.length;
-  const targetAngle = segmentIndex * segmentSize + segmentSize / 2;
-  return 360 - targetAngle;
+  return normalizeAngle(360 - segmentIndex * segmentSize);
 }
 
 function normalizeAngle(angle) {
@@ -474,14 +469,15 @@ function playResultSound(kind) {
   const now = state.audioContext.currentTime + 0.02;
 
   if (kind === "win") {
-    playTone(now, 523.25, 0.14, "sine", 0.07);
-    playTone(now + 0.12, 659.25, 0.16, "sine", 0.08);
-    playTone(now + 0.26, 783.99, 0.22, "triangle", 0.09);
+    playTone(now, 523.25, 0.16, "triangle", 0.13);
+    playTone(now + 0.11, 659.25, 0.18, "triangle", 0.14);
+    playTone(now + 0.24, 783.99, 0.24, "sine", 0.16);
+    playTone(now + 0.24, 987.77, 0.24, "sine", 0.1);
     return;
   }
 
-  playTone(now, 240, 0.16, "sawtooth", 0.06);
-  playTone(now + 0.14, 180, 0.22, "triangle", 0.05);
+  playTone(now, 240, 0.16, "sawtooth", 0.09);
+  playTone(now + 0.13, 180, 0.22, "triangle", 0.08);
 }
 
 function playTone(startTime, frequency, duration, type, peakGain) {
