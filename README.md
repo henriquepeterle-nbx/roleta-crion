@@ -19,11 +19,12 @@ http://localhost:4173
 ## Fluxo implementado
 
 - Tela inicial com logo da Cirion
-- Cadastro com nome, telefone, e-mail e interesse em `FIBER` ou `DATA CENTER`
+- Entrada direta na roleta, sem formulário
 - Roleta com 8 áreas
-- Pergunta antes de liberar prêmio
+- Resultado imediato de ganho, perda ou `Spin Again`
+- Efeito sonoro de vitória ou derrota
 - Resultado final e retorno automático para a tela inicial
-- Limite de `1 Alexa por dia` no mesmo navegador/dispositivo
+- Limite de `1 Alexa of the Day` no mesmo navegador/dispositivo
 
 ## Onde editar o conteúdo
 
@@ -32,45 +33,12 @@ Tudo fica em [`app.js`](/Users/henriquepeterle/Desktop/Cirion/app.js):
 - `WHEEL_SEGMENTS`: define as 8 áreas da roleta
 - `QUESTION_BANK`: define as perguntas e respostas para `FIBER` e `DATA CENTER`
 
-## Leads e controle
+## Data
 
-Os cadastros e resultados continuam salvos em `localStorage` no navegador.
+O fluxo atual não coleta dados de participantes e não depende de Supabase.
 
-Além disso:
-
-- o formulário cria um registro no Supabase em `LEADS`
-- `reason` recebe `FIBER` ou `DATA CENTER`
-- `prize` começa como `false`
-- quando o participante ganha o prêmio e acerta a pergunta, o lead é atualizado para `prize = true`
-
-Para abrir o painel admin e exportar CSV:
-
-```text
-http://localhost:4173/?admin=1
-```
-
-O painel admin permite:
-
-- Exportar os leads em CSV
-- Resetar a Alexa do dia
-- Limpar os dados salvos no navegador
+O único dado salvo localmente é o controle de `1 Alexa of the Day` por navegador/dispositivo.
 
 ## Backend e deploy
 
-O projeto roda localmente com [`server.js`](/Users/henriquepeterle/Desktop/Cirion/server.js), que:
-
-- serve os arquivos estáticos
-- expõe `POST /api/leads`
-- expõe `PATCH /api/leads/:id`
-- mantém a chave do Supabase no servidor, não no navegador
-
-Para deploy na Vercel, as mesmas rotas existem em:
-
-- [`api/leads/index.js`](/Users/henriquepeterle/Desktop/Cirion/api/leads/index.js)
-- [`api/leads/[id].js`](/Users/henriquepeterle/Desktop/Cirion/api/leads/[id].js)
-- [`api/health.js`](/Users/henriquepeterle/Desktop/Cirion/api/health.js)
-
-Variáveis necessárias na Vercel:
-
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_KEY`
+O projeto continua rodando localmente com [`server.js`](/Users/henriquepeterle/Desktop/Cirion/server.js) para servir os arquivos estáticos.
