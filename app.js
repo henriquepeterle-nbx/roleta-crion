@@ -57,7 +57,8 @@ const state = {
   celebrationTimer: null,
   returnTimer: null,
   returnCountdownTimer: null,
-  audioContext: null,
+  audioUnlocked: false,
+  sounds: null,
 };
 
 const elements = {
@@ -79,6 +80,7 @@ const elements = {
 };
 
 function init() {
+  state.sounds = createSoundBank();
   renderWheelLabels();
   bindEvents();
   showScreen("home");
@@ -140,6 +142,7 @@ function handleSpin() {
   state.activeOutcome = chosen.segment;
 
   elements.wheelButton.classList.add("is-disabled");
+  playSpinSound();
   setStatusNote(`Spin ${state.spinCount}: the wheel is spinning...`);
 
   const desiredRotation = getDesiredRotationForSegment(chosen.index);
@@ -159,6 +162,7 @@ function handleSpin() {
   window.setTimeout(() => {
     state.isSpinning = false;
     elements.wheelButton.classList.remove("is-disabled");
+    stopSpinSound();
     handleSpinOutcome(chosen.segment);
   }, 5500);
 }
@@ -311,6 +315,7 @@ function scheduleReturnHome() {
 
 function finalizeRoundAndReturn() {
   clearReturnTimers();
+  stopSpinSound();
   hideOverlay();
   resetRound();
   showScreen("home");
@@ -333,6 +338,7 @@ function resetRound() {
   state.activeOutcome = null;
   state.isSpinning = false;
   state.currentRotation = 0;
+  stopSpinSound();
   clearCelebration();
   elements.wheelButton.classList.remove("is-disabled");
   elements.wheelRotor.style.transition = "none";
@@ -446,55 +452,79 @@ function clearCelebration() {
 }
 
 function unlockAudio() {
-  const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
-
-  if (!AudioContextConstructor) {
+  if (!state.sounds || state.audioUnlocked) {
     return;
   }
 
-  if (!state.audioContext) {
-    state.audioContext = new AudioContextConstructor();
-  }
+  state.audioUnlocked = true;
 
-  if (state.audioContext.state === "suspended") {
-    state.audioContext.resume().catch(() => {});
-  }
+  Object.values(state.sounds).forEach((sound) => {
+    sound.muted = true;
+    sound
+      .play()
+      .then(() => {
+        sound.pause();
+        sound.currentTime = 0;
+      })
+      .catch(() => {})
+      .finally(() => {
+        sound.muted = false;
+      });
+  });
 }
 
 function playResultSound(kind) {
-  if (!state.audioContext) {
+  if (!state.sounds) {
     return;
   }
-
-  const now = state.audioContext.currentTime + 0.02;
 
   if (kind === "win") {
-    playTone(now, 523.25, 0.16, "triangle", 0.13);
-    playTone(now + 0.11, 659.25, 0.18, "triangle", 0.14);
-    playTone(now + 0.24, 783.99, 0.24, "sine", 0.16);
-    playTone(now + 0.24, 987.77, 0.24, "sine", 0.1);
+    playSound(state.sounds.win);
     return;
   }
 
-  playTone(now, 240, 0.16, "sawtooth", 0.09);
-  playTone(now + 0.13, 180, 0.22, "triangle", 0.08);
+  playSound(state.sounds.lose);
 }
 
-function playTone(startTime, frequency, duration, type, peakGain) {
-  const oscillator = state.audioContext.createOscillator();
-  const gainNode = state.audioContext.createGain();
+function createSoundBank() {
+  const spin = new Audio("./assets/audio/spin.mp3");
+  const win = new Audio("./assets/audio/win.mp3");
+  const lose = new Audio("./assets/audio/lose.mp3");
 
-  oscillator.type = type;
-  oscillator.frequency.setValueAtTime(frequency, startTime);
-  gainNode.gain.setValueAtTime(0.0001, startTime);
-  gainNode.gain.exponentialRampToValueAtTime(peakGain, startTime + 0.01);
-  gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+  spin.preload = "auto";
+  spin.loop = true;
+  win.preload = "auto";
+  lose.preload = "auto";
 
-  oscillator.connect(gainNode);
-  gainNode.connect(state.audioContext.destination);
+  return { spin, win, lose };
+}
 
-  oscillator.start(startTime);
-  oscillator.stop(startTime + duration + 0.02);
+function playSpinSound() {
+  if (!state.sounds) {
+    return;
+  }
+
+  state.sounds.spin.currentTime = 0;
+  state.sounds.spin.play().catch(() => {});
+}
+
+function stopSpinSound() {
+  if (!state.sounds) {
+    return;
+  }
+
+  state.sounds.spin.pause();
+  state.sounds.spin.currentTime = 0;
+}
+
+function playSound(sound) {
+  if (!sound) {
+    return;
+  }
+
+  sound.pause();
+  sound.currentTime = 0;
+  sound.play().catch(() => {});
 }
 
 init();
