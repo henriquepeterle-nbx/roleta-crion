@@ -6,33 +6,183 @@
     <title>Cirion Prize Wheel</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body data-screen="home">
+  <body data-screen="form">
     <div class="page-backdrop" aria-hidden="true"></div>
+
     <button class="language-toggle" id="languageToggle" type="button" aria-label="">
       PT-BR
     </button>
 
     <main class="app-shell">
-      <section class="screen screen--active" id="homeScreen" aria-labelledby="homeTitle">
-        <div class="hero-card">
-          <span class="eyebrow" id="homeEyebrow">Cirion interactive experience</span>
-          <button
-            class="logo-trigger logo-trigger--surface"
-            id="startTrigger"
-            type="button"
-            aria-label="Start the Cirion prize wheel"
-          >
-            <span class="logo-clip logo-clip--hero">
-              <img
-                id="brandLogo"
-                class="brand-logo brand-logo--hero"
-                src="./assets/logo-blue-bg.png"
-                alt="Cirion logo"
-              />
-            </span>
-          </button>
-          <h1 id="homeTitle">Tap the logo to play</h1>
-          <p class="hero-copy" id="heroCopy">Spin the wheel and instantly see if you win.</p>
+      <section
+        class="screen screen--active registration-screen"
+        id="formScreen"
+        aria-labelledby="formTitle"
+      >
+        <div class="registration-shell">
+          <header class="registration-header">
+            <img
+              id="formLogo"
+              class="brand-logo brand-logo--header"
+              src="./assets/logo-color.png"
+              alt="Cirion logo"
+            />
+          </header>
+
+          <div class="registration-stage">
+            <div class="registration-copy">
+              <span class="eyebrow eyebrow--light" id="formEyebrow">
+                Cirion interactive experience
+              </span>
+              <h1 id="formTitle">Register to spin the wheel</h1>
+              <p class="registration-copy__lead" id="formLead">
+                Complete your details and then spin the Cirion prize wheel.
+              </p>
+              <div class="registration-copy__blocks">
+                <p id="formBodyOne">
+                  Meet the Cirion team and learn more about digital infrastructure solutions for
+                  your business.
+                </p>
+                <p id="formBodyTwo">
+                  After registration, the wheel opens immediately and the result appears on screen.
+                </p>
+              </div>
+            </div>
+
+            <div class="registration-panel">
+              <div class="registration-panel__head">
+                <span class="eyebrow" id="formPanelEyebrow">Register to learn more</span>
+                <p class="registration-panel__note" id="formPanelNote">
+                  Required fields are marked with *
+                </p>
+              </div>
+
+              <form class="registration-form" id="leadForm" novalidate>
+                <div class="field-grid field-grid--two">
+                  <label class="field" data-field-name="firstName">
+                    <input
+                      id="firstName"
+                      name="firstName"
+                      type="text"
+                      autocomplete="off"
+                      inputmode="text"
+                      data-keyboard="text"
+                      placeholder="First Name*"
+                    />
+                    <small class="field-error" aria-live="polite"></small>
+                  </label>
+
+                  <label class="field" data-field-name="lastName">
+                    <input
+                      id="lastName"
+                      name="lastName"
+                      type="text"
+                      autocomplete="off"
+                      inputmode="text"
+                      data-keyboard="text"
+                      placeholder="Last Name*"
+                    />
+                    <small class="field-error" aria-live="polite"></small>
+                  </label>
+                </div>
+
+                <label class="field" data-field-name="country">
+                  <select id="country" name="country">
+                    <option value="">Country (Select)*</option>
+                  </select>
+                  <small class="field-error" aria-live="polite"></small>
+                </label>
+
+                <label class="field" data-field-name="company">
+                  <input
+                    id="company"
+                    name="company"
+                    type="text"
+                    autocomplete="off"
+                    inputmode="text"
+                    data-keyboard="text"
+                    placeholder="Company*"
+                  />
+                  <small class="field-error" aria-live="polite"></small>
+                </label>
+
+                <label class="field" data-field-name="email">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autocomplete="off"
+                    inputmode="email"
+                    data-keyboard="email"
+                    placeholder="Corporate Email*"
+                  />
+                  <small class="field-error" aria-live="polite"></small>
+                </label>
+
+                <label class="field" data-field-name="jobTitle">
+                  <input
+                    id="jobTitle"
+                    name="jobTitle"
+                    type="text"
+                    autocomplete="off"
+                    inputmode="text"
+                    data-keyboard="text"
+                    placeholder="Job Title"
+                  />
+                  <small class="field-error" aria-live="polite"></small>
+                </label>
+
+                <div class="field-grid field-grid--phone">
+                  <label class="field" data-field-name="areaCode">
+                    <input
+                      id="areaCode"
+                      name="areaCode"
+                      type="text"
+                      autocomplete="off"
+                      inputmode="numeric"
+                      data-keyboard="numeric"
+                      placeholder="Area Code*"
+                    />
+                    <small class="field-error" aria-live="polite"></small>
+                  </label>
+
+                  <label class="field" data-field-name="phoneNumber">
+                    <input
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      type="text"
+                      autocomplete="off"
+                      inputmode="numeric"
+                      data-keyboard="numeric"
+                      placeholder="Phone Number*"
+                    />
+                    <small class="field-error" aria-live="polite"></small>
+                  </label>
+                </div>
+
+                <label class="check-field">
+                  <input id="marketingConsent" name="marketingConsent" type="checkbox" checked />
+                  <span id="marketingConsentLabel">
+                    I want to receive information and offers about Cirion solutions and events.
+                  </span>
+                </label>
+
+                <label class="check-field" data-field-name="privacyAccepted">
+                  <input id="privacyAccepted" name="privacyAccepted" type="checkbox" />
+                  <span id="privacyAcceptedLabel">
+                    By submitting this form, I acknowledge the Cirion Privacy Notice.
+                  </span>
+                  <small class="field-error" aria-live="polite"></small>
+                </label>
+
+                <p class="form-feedback" id="formFeedback" hidden></p>
+
+                <button class="primary-button" id="leadSubmitButton" type="submit">
+                  Continue to Wheel
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -44,14 +194,9 @@
 
             <div class="wheel-stage">
               <div class="wheel-pointer" aria-hidden="true"></div>
-              <button
-                class="wheel"
-                id="wheelButton"
-                type="button"
-                aria-label="Spin the wheel"
-              >
+              <button class="wheel" id="wheelButton" type="button" aria-label="Spin the wheel">
                 <div class="wheel-rotor" id="wheelRotor">
-                  <div class="wheel-face" id="wheelFace"></div>
+                  <div class="wheel-face"></div>
                   <div class="wheel-labels" id="wheelLabels" aria-hidden="true"></div>
                 </div>
                 <div class="wheel-center">
@@ -81,6 +226,16 @@
     </section>
 
     <section class="celebration" id="celebration" hidden aria-hidden="true"></section>
+
+    <section class="keyboard" id="virtualKeyboard" hidden aria-label="Virtual keyboard">
+      <div class="keyboard-shell" id="keyboardShell">
+        <div class="keyboard-header">
+          <p class="keyboard-title" id="keyboardTitle">Virtual keyboard</p>
+          <button class="keyboard-close" id="keyboardCloseButton" type="button">Done</button>
+        </div>
+        <div class="keyboard-keys" id="keyboardKeys"></div>
+      </div>
+    </section>
 
     <script src="./app.js"></script>
   </body>
