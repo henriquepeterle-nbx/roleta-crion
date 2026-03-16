@@ -21,10 +21,10 @@ http://localhost:4173
 ```text
 SUPABASE_URL=
 SUPABASE_SERVICE_KEY=
-SUPABASE_LEADS_TABLE=LEADS
+SUPABASE_TABLE=LEADS
 ```
 
-`SUPABASE_LEADS_TABLE` é opcional. Se não for informado, o backend usa `LEADS`.
+`SUPABASE_TABLE` é opcional. Se não for informado, o backend usa `LEADS`.
 
 ## Fluxo implementado
 
