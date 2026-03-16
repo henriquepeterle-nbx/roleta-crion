@@ -494,30 +494,22 @@ body.keyboard-open .language-toggle {
 
 .wheel-label {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: clamp(58px, calc(var(--wheel-size) * 0.11), 84px);
-  transform:
-    translate(-50%, -50%)
-    rotate(calc(var(--index) * var(--segment-size)))
-    translateY(calc(-1 * clamp(172px, calc(var(--wheel-size) * 0.405), 308px)));
-}
-
-.wheel-label__inner {
+  width: clamp(72px, calc(var(--wheel-size) * 0.15), 110px);
+  transform: translate(-50%, -50%);
   display: grid;
-  gap: 2px;
+  gap: 3px;
   justify-items: center;
   text-align: center;
-  transform: rotate(calc(var(--index) * var(--segment-size) * -1));
+  pointer-events: none;
 }
 
 .wheel-label span {
   display: block;
   color: white;
   width: 100%;
-  font-size: clamp(0.56rem, 0.64vw, 0.66rem);
+  font-size: clamp(0.62rem, 0.74vw, 0.76rem);
   font-weight: 800;
-  line-height: 1.04;
+  line-height: 1.08;
   text-transform: uppercase;
   text-shadow: 0 2px 8px rgba(4, 9, 39, 0.36);
 }
@@ -739,7 +731,7 @@ body.keyboard-open .language-toggle {
 @media (max-width: 720px) {
   :root {
     --floating-ui-offset: calc(76px + env(safe-area-inset-bottom, 0px));
-    --wheel-size: clamp(280px, min(94vw, calc(100dvh - 210px)), 520px);
+    --wheel-size: clamp(340px, min(98vw, calc(100dvh - 170px)), 660px);
   }
 
   .registration-shell,
@@ -769,12 +761,21 @@ body.keyboard-open .language-toggle {
   }
 
   .wheel-stage-card h2 {
-    font-size: clamp(2rem, 9vw, 3rem);
+    font-size: clamp(1.8rem, 8vw, 2.6rem);
+    line-height: 0.96;
   }
 
   .wheel-pointer {
     width: 44px;
     height: 66px;
+  }
+
+  .wheel-label {
+    width: clamp(62px, calc(var(--wheel-size) * 0.14), 92px);
+  }
+
+  .wheel-label span {
+    font-size: clamp(0.58rem, 1.9vw, 0.72rem);
   }
 
   .keyboard {

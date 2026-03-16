@@ -430,16 +430,17 @@ function fillAreaCodeFromCountry(countryCode) {
 
 function renderWheelLabels() {
   const fragment = document.createDocumentFragment();
+  const radiusPercent = 31;
 
   WHEEL_SEGMENTS.forEach((segment, index) => {
+    const angleDeg = index * 45;
+    const angleRad = (angleDeg * Math.PI) / 180;
     const labelLines = t(`wheel.segmentLabels.${segment.type}`);
     const label = document.createElement("div");
     label.className = "wheel-label";
-    label.style.setProperty("--index", String(index));
-    const inner = document.createElement("div");
-    inner.className = "wheel-label__inner";
-    inner.innerHTML = labelLines.map((line) => `<span>${line}</span>`).join("");
-    label.appendChild(inner);
+    label.style.left = `${50 + Math.sin(angleRad) * radiusPercent}%`;
+    label.style.top = `${50 - Math.cos(angleRad) * radiusPercent}%`;
+    label.innerHTML = labelLines.map((line) => `<span>${line}</span>`).join("");
     fragment.appendChild(label);
   });
 
