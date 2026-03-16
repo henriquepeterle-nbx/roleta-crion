@@ -5,6 +5,13 @@ const STORAGE_KEYS = {
 
 const DEFAULT_SPIN_DURATION_MS = 3683;
 const COUNTRIES = ["BR", "AR", "CL", "CO", "MX", "PE", "US", "OTHER"];
+const REASON_OPTIONS = ["fiber", "dataCenter", "both", "none"];
+const REASON_VALUES = {
+  fiber: "Fiber",
+  dataCenter: "Data Center",
+  both: "Both",
+  none: "None",
+};
 const COUNTRY_DIAL_CODES = {
   BR: "+55",
   AR: "+54",
@@ -63,6 +70,7 @@ const COPY = {
         jobTitle: "Job Title",
         areaCode: "Country Code*",
         phoneNumber: "Phone Number*",
+        reason: "Are you interested in Fiber or Data Center?",
       },
       fieldNames: {
         firstName: "First Name",
@@ -72,6 +80,13 @@ const COPY = {
         email: "Corporate Email",
         areaCode: "Country Code",
         phoneNumber: "Phone Number",
+        reason: "Interest",
+      },
+      reasonOptions: {
+        fiber: "Fiber",
+        dataCenter: "Data Center",
+        both: "Both",
+        none: "None",
       },
       countries: {
         BR: "Brazil",
@@ -169,6 +184,7 @@ const COPY = {
         jobTitle: "Cargo",
         areaCode: "DDI*",
         phoneNumber: "Telefone*",
+        reason: "Você tem interesse em Fiber ou Data Center?",
       },
       fieldNames: {
         firstName: "Nome",
@@ -178,6 +194,13 @@ const COPY = {
         email: "E-mail corporativo",
         areaCode: "DDI",
         phoneNumber: "Telefone",
+        reason: "Interesse",
+      },
+      reasonOptions: {
+        fiber: "Fiber",
+        dataCenter: "Data Center",
+        both: "Ambos",
+        none: "Nenhum",
       },
       countries: {
         BR: "Brasil",
@@ -293,6 +316,7 @@ const elements = {
   jobTitle: document.querySelector("#jobTitle"),
   areaCode: document.querySelector("#areaCode"),
   phoneNumber: document.querySelector("#phoneNumber"),
+  reason: document.querySelector("#reason"),
   marketingConsent: document.querySelector("#marketingConsent"),
   marketingConsentLabel: document.querySelector("#marketingConsentLabel"),
   privacyAccepted: document.querySelector("#privacyAccepted"),
@@ -326,6 +350,7 @@ function init() {
   state.sounds = createSoundBank();
   renderWheelLabels();
   renderCountryOptions();
+  renderReasonOptions();
   bindEvents();
   applyLanguage();
   showScreen("form");
@@ -385,6 +410,7 @@ function applyLanguage() {
 
   renderFieldPlaceholders();
   renderCountryOptions();
+  renderReasonOptions();
   renderWheelLabels();
   renderStatusNote();
   renderOverlay();
@@ -421,6 +447,25 @@ function renderCountryOptions() {
 
   elements.country.replaceChildren(fragment);
   elements.country.value = COUNTRIES.includes(currentValue) ? currentValue : "";
+}
+
+function renderReasonOptions() {
+  const currentValue = elements.reason.value;
+  const fragment = document.createDocumentFragment();
+  const placeholderOption = document.createElement("option");
+  placeholderOption.value = "";
+  placeholderOption.textContent = t("form.placeholders.reason");
+  fragment.appendChild(placeholderOption);
+
+  REASON_OPTIONS.forEach((reasonKey) => {
+    const option = document.createElement("option");
+    option.value = reasonKey;
+    option.textContent = t(`form.reasonOptions.${reasonKey}`);
+    fragment.appendChild(option);
+  });
+
+  elements.reason.replaceChildren(fragment);
+  elements.reason.value = REASON_OPTIONS.includes(currentValue) ? currentValue : "";
 }
 
 function fillAreaCodeFromCountry(countryCode) {
@@ -565,6 +610,7 @@ function getFormValues() {
     jobTitle: normalizeText(elements.jobTitle.value),
     areaCode: sanitizeInputValue("areaCode", elements.areaCode.value),
     phoneNumber: sanitizeInputValue("phoneNumber", elements.phoneNumber.value),
+    reason: elements.reason.value,
     marketingConsent: elements.marketingConsent.checked,
     privacyAccepted: elements.privacyAccepted.checked,
   };
@@ -996,6 +1042,10 @@ function normalizeEmail(value) {
   return String(value || "").trim().toLowerCase();
 }
 
+function getReasonSubmissionValue(reasonKey) {
+  return REASON_VALUES[reasonKey] || null;
+}
+
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
@@ -1010,6 +1060,7 @@ async function createLead(values) {
     jobTitle: values.jobTitle,
     areaCode: values.areaCode,
     phoneNumber: values.phoneNumber,
+    reason: getReasonSubmissionValue(values.reason),
   };
 
   const response = await fetch("/api/leads", {
