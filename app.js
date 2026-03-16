@@ -5,6 +5,16 @@ const STORAGE_KEYS = {
 
 const DEFAULT_SPIN_DURATION_MS = 3683;
 const COUNTRIES = ["BR", "AR", "CL", "CO", "MX", "PE", "US", "OTHER"];
+const COUNTRY_DIAL_CODES = {
+  BR: "+55",
+  AR: "+54",
+  CL: "+56",
+  CO: "+57",
+  MX: "+52",
+  PE: "+51",
+  US: "+1",
+  OTHER: "",
+};
 const FORM_FIELD_ORDER = [
   "firstName",
   "lastName",
@@ -51,7 +61,7 @@ const COPY = {
         company: "Company*",
         email: "Corporate Email*",
         jobTitle: "Job Title",
-        areaCode: "Area Code*",
+        areaCode: "Country Code*",
         phoneNumber: "Phone Number*",
       },
       fieldNames: {
@@ -60,7 +70,7 @@ const COPY = {
         country: "Country",
         company: "Company",
         email: "Corporate Email",
-        areaCode: "Area Code",
+        areaCode: "Country Code",
         phoneNumber: "Phone Number",
       },
       countries: {
@@ -85,7 +95,7 @@ const COPY = {
       errors: {
         required: "{field} is required.",
         email: "Enter a valid email address.",
-        areaCode: "Enter a valid area code.",
+        areaCode: "Enter a valid country code.",
         phoneNumber: "Enter a valid phone number.",
         privacyAccepted: "You must accept the privacy notice to continue.",
       },
@@ -157,7 +167,7 @@ const COPY = {
         company: "Empresa*",
         email: "E-mail corporativo*",
         jobTitle: "Cargo",
-        areaCode: "DDD*",
+        areaCode: "DDI*",
         phoneNumber: "Telefone*",
       },
       fieldNames: {
@@ -166,7 +176,7 @@ const COPY = {
         country: "País",
         company: "Empresa",
         email: "E-mail corporativo",
-        areaCode: "DDD",
+        areaCode: "DDI",
         phoneNumber: "Telefone",
       },
       countries: {
@@ -191,7 +201,7 @@ const COPY = {
       errors: {
         required: "O campo {field} é obrigatório.",
         email: "Informe um e-mail válido.",
-        areaCode: "Informe um DDD válido.",
+        areaCode: "Informe um DDI válido.",
         phoneNumber: "Informe um telefone válido.",
         privacyAccepted: "Você precisa aceitar o aviso de privacidade para continuar.",
       },
@@ -413,6 +423,11 @@ function renderCountryOptions() {
   elements.country.value = COUNTRIES.includes(currentValue) ? currentValue : "";
 }
 
+function fillAreaCodeFromCountry(countryCode) {
+  const dialCode = COUNTRY_DIAL_CODES[countryCode] || "";
+  elements.areaCode.value = dialCode;
+}
+
 function renderWheelLabels() {
   const fragment = document.createDocumentFragment();
 
@@ -470,6 +485,15 @@ function handleFormChange(event) {
   if (target.id === "country" && state.formErrors.country) {
     delete state.formErrors.country;
     renderFormErrors();
+  }
+
+  if (target.id === "country") {
+    fillAreaCodeFromCountry(target.value);
+
+    if (state.formErrors.areaCode) {
+      delete state.formErrors.areaCode;
+      renderFormErrors();
+    }
   }
 }
 
@@ -569,7 +593,7 @@ function validateForm(values) {
 
   if (!values.areaCode) {
     errors.areaCode = { type: "required", fieldKey: "form.fieldNames.areaCode" };
-  } else if (!/^\d{2,5}$/.test(values.areaCode)) {
+  } else if (!/^\+\d{1,4}$/.test(values.areaCode)) {
     errors.areaCode = { type: "areaCode" };
   }
 
@@ -949,7 +973,8 @@ function sanitizeKeyboardValue(fieldName, value) {
 
 function sanitizeInputValue(fieldName, value) {
   if (fieldName === "areaCode") {
-    return value.replace(/\D/g, "").slice(0, 5);
+    const digits = value.replace(/\D/g, "").slice(0, 4);
+    return digits ? `+${digits}` : "";
   }
 
   if (fieldName === "phoneNumber") {
