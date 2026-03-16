@@ -99,7 +99,7 @@ const COPY = {
         special: ["SPECIAL", "GIFT"],
         noLuck: ["NOT THIS", "TIME"],
         replay: ["SPIN", "AGAIN"],
-        alexa: ["ALEXA", "OF THE DAY"],
+        alexa: ["ALEXA"],
       },
     },
     overlay: {
@@ -205,7 +205,7 @@ const COPY = {
         special: ["BRINDE", "ESPECIAL"],
         noLuck: ["NÃO FOI", "DESSA VEZ"],
         replay: ["GIRE", "NOVAMENTE"],
-        alexa: ["ALEXA", "DO DIA"],
+        alexa: ["ALEXA"],
       },
     },
     overlay: {
@@ -1085,14 +1085,14 @@ function pickWeightedCandidate(candidates) {
 function getSegmentWeight(segment) {
   switch (segment.type) {
     case "special":
-      return 2;
+      return 0.8;
     case "replay":
-      return 2;
+      return 1.2;
     case "alexa":
-      return 1;
+      return 0.35;
     case "noLuck":
     default:
-      return 1;
+      return 2.2;
   }
 }
 
