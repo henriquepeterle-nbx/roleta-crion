@@ -8,11 +8,14 @@
   </head>
   <body data-screen="home">
     <div class="page-backdrop" aria-hidden="true"></div>
+    <button class="language-toggle" id="languageToggle" type="button" aria-label="">
+      PT-BR
+    </button>
 
     <main class="app-shell">
       <section class="screen screen--active" id="homeScreen" aria-labelledby="homeTitle">
         <div class="hero-card">
-          <span class="eyebrow">Cirion interactive experience</span>
+          <span class="eyebrow" id="homeEyebrow">Cirion interactive experience</span>
           <button
             class="logo-trigger logo-trigger--surface"
             id="startTrigger"
@@ -21,6 +24,7 @@
           >
             <span class="logo-clip logo-clip--hero">
               <img
+                id="brandLogo"
                 class="brand-logo brand-logo--hero"
                 src="./assets/logo-blue-bg.png"
                 alt="Cirion logo"
@@ -28,14 +32,14 @@
             </span>
           </button>
           <h1 id="homeTitle">Tap the logo to play</h1>
-          <p class="hero-copy">Spin the wheel and instantly see if you win.</p>
+          <p class="hero-copy" id="heroCopy">Spin the wheel and instantly see if you win.</p>
         </div>
       </section>
 
       <section class="screen" id="wheelScreen" aria-labelledby="wheelTitle">
         <div class="wheel-layout">
           <div class="wheel-stage-card">
-            <span class="eyebrow eyebrow--dark">Cirion Prize Wheel</span>
+            <span class="eyebrow eyebrow--dark" id="wheelEyebrow">Cirion Prize Wheel</span>
             <h2 id="wheelTitle">Tap the wheel to spin</h2>
 
             <div class="wheel-stage">
@@ -51,7 +55,7 @@
                   <div class="wheel-labels" id="wheelLabels" aria-hidden="true"></div>
                 </div>
                 <div class="wheel-center">
-                  <strong>SPIN</strong>
+                  <strong id="wheelCenterLabel">SPIN</strong>
                 </div>
               </button>
             </div>

@@ -1,60 +1,120 @@
 const STORAGE_KEYS = {
   dailyAlexa: "cirion-wheel-daily-alexa",
+  language: "cirion-wheel-language",
 };
+
 const DEFAULT_SPIN_DURATION_MS = 3683;
 
 const WHEEL_SEGMENTS = [
-  {
-    id: "special-1",
-    type: "special",
-    label: ["SPECIAL", "GIFT"],
-    prize: "a Cirion special gift",
-  },
-  {
-    id: "no-luck-1",
-    type: "noLuck",
-    label: ["NOT THIS", "TIME"],
-  },
-  {
-    id: "replay-1",
-    type: "replay",
-    label: ["SPIN", "AGAIN"],
-  },
-  {
-    id: "no-luck-2",
-    type: "noLuck",
-    label: ["NOT THIS", "TIME"],
-  },
-  {
-    id: "special-2",
-    type: "special",
-    label: ["SPECIAL", "GIFT"],
-    prize: "a Cirion special gift",
-  },
-  {
-    id: "no-luck-3",
-    type: "noLuck",
-    label: ["NOT THIS", "TIME"],
-  },
-  {
-    id: "alexa-1",
-    type: "alexa",
-    label: ["ALEXA", "OF THE DAY"],
-    prize: "an Amazon Alexa",
-  },
-  {
-    id: "replay-2",
-    type: "replay",
-    label: ["SPIN", "AGAIN"],
-  },
+  { id: "special-1", type: "special" },
+  { id: "no-luck-1", type: "noLuck" },
+  { id: "replay-1", type: "replay" },
+  { id: "no-luck-2", type: "noLuck" },
+  { id: "special-2", type: "special" },
+  { id: "no-luck-3", type: "noLuck" },
+  { id: "alexa-1", type: "alexa" },
+  { id: "replay-2", type: "replay" },
 ];
+
+const COPY = {
+  en: {
+    pageTitle: "Cirion Prize Wheel",
+    languageToggle: "PT-BR",
+    languageToggleAria: "Switch language to Portuguese (Brazil)",
+    homeEyebrow: "Cirion interactive experience",
+    homeTitle: "Tap the logo to play",
+    homeCopy: "Spin the wheel and instantly see if you win.",
+    startAria: "Start the Cirion prize wheel",
+    logoAlt: "Cirion logo",
+    wheelEyebrow: "Cirion Prize Wheel",
+    wheelTitle: "Tap the wheel to spin",
+    spinAria: "Spin the wheel",
+    spinLabel: "SPIN",
+    segmentLabels: {
+      special: ["SPECIAL", "GIFT"],
+      noLuck: ["NOT THIS", "TIME"],
+      replay: ["SPIN", "AGAIN"],
+      alexa: ["ALEXA", "OF THE DAY"],
+    },
+    overlay: {
+      defaultEyebrow: "Result",
+      defaultTitle: "Round result",
+      maybeNextEyebrow: "Maybe next time",
+      noLuckTitle: "NOT THIS TIME",
+      noLuckDescription: "Thanks for playing. Tap Play Again for a new spin.",
+      bonusEyebrow: "Bonus spin",
+      spinAgainTitle: "SPIN AGAIN",
+      spinAgainDescription: "You earned one extra spin. Tap the button below to spin again.",
+      winnerEyebrow: "Winner",
+      specialTitle: "YOU WON A SPECIAL GIFT",
+      specialDescription: "Take your prize with the Cirion team.",
+      alexaTitle: "YOU WON AN ALEXA",
+      alexaDescription: "Take your prize with the Cirion team.",
+      playAgainAction: "PLAY AGAIN",
+      spinAgainAction: "SPIN AGAIN",
+    },
+    status: {
+      ready: "Tap Spin to play.",
+      readyNoAlexa: "Tap Spin to play. The Alexa of the Day has already been claimed.",
+      noOutcomes: "No available outcomes were found.",
+      spinning: "Spin {count}: the wheel is spinning...",
+    },
+  },
+  "pt-BR": {
+    pageTitle: "Roleta de Prêmios Cirion",
+    languageToggle: "EN",
+    languageToggleAria: "Mudar idioma para inglês",
+    homeEyebrow: "Experiência interativa Cirion",
+    homeTitle: "Toque na logo para jogar",
+    homeCopy: "Gire a roleta e descubra na hora se você ganhou.",
+    startAria: "Começar a roleta de prêmios da Cirion",
+    logoAlt: "Logo da Cirion",
+    wheelEyebrow: "Roleta de Prêmios Cirion",
+    wheelTitle: "Toque na roleta para girar",
+    spinAria: "Girar a roleta",
+    spinLabel: "GIRE",
+    segmentLabels: {
+      special: ["BRINDE", "ESPECIAL"],
+      noLuck: ["NÃO FOI", "DESSA VEZ"],
+      replay: ["GIRE", "NOVAMENTE"],
+      alexa: ["ALEXA", "DO DIA"],
+    },
+    overlay: {
+      defaultEyebrow: "Resultado",
+      defaultTitle: "Resultado da rodada",
+      maybeNextEyebrow: "Talvez na próxima",
+      noLuckTitle: "NÃO FOI DESSA VEZ",
+      noLuckDescription: "Obrigado por jogar. Toque em Jogar de Novo para tentar mais uma vez.",
+      bonusEyebrow: "Nova chance",
+      spinAgainTitle: "GIRE NOVAMENTE",
+      spinAgainDescription: "Você ganhou uma rodada extra. Toque no botão abaixo para girar de novo.",
+      winnerEyebrow: "Vencedor",
+      specialTitle: "VOCÊ GANHOU UM BRINDE ESPECIAL",
+      specialDescription: "Retire seu prêmio com a equipe da Cirion.",
+      alexaTitle: "VOCÊ GANHOU UMA ALEXA",
+      alexaDescription: "Retire seu prêmio com a equipe da Cirion.",
+      playAgainAction: "JOGAR DE NOVO",
+      spinAgainAction: "GIRAR DE NOVO",
+    },
+    status: {
+      ready: "Toque em GIRE para jogar.",
+      readyNoAlexa: "Toque em GIRE para jogar. A Alexa do dia já foi entregue.",
+      noOutcomes: "Nenhum resultado disponível foi encontrado.",
+      spinning: "Giro {count}: a roleta está girando...",
+    },
+  },
+};
 
 const state = {
   screen: "home",
+  language: readLanguage(),
   spinCount: 0,
   currentRotation: 0,
   isSpinning: false,
   activeOutcome: null,
+  overlayConfig: null,
+  statusNoteKey: "status.ready",
+  statusNoteParams: {},
   celebrationTimer: null,
   returnTimer: null,
   returnCountdownTimer: null,
@@ -67,8 +127,16 @@ const elements = {
     home: document.querySelector("#homeScreen"),
     wheel: document.querySelector("#wheelScreen"),
   },
+  languageToggle: document.querySelector("#languageToggle"),
+  homeEyebrow: document.querySelector("#homeEyebrow"),
+  homeTitle: document.querySelector("#homeTitle"),
+  heroCopy: document.querySelector("#heroCopy"),
   startTrigger: document.querySelector("#startTrigger"),
+  brandLogo: document.querySelector("#brandLogo"),
+  wheelEyebrow: document.querySelector("#wheelEyebrow"),
+  wheelTitle: document.querySelector("#wheelTitle"),
   wheelButton: document.querySelector("#wheelButton"),
+  wheelCenterLabel: document.querySelector("#wheelCenterLabel"),
   wheelRotor: document.querySelector("#wheelRotor"),
   wheelLabels: document.querySelector("#wheelLabels"),
   statusNote: document.querySelector("#statusNote"),
@@ -84,17 +152,20 @@ function init() {
   state.sounds = createSoundBank();
   renderWheelLabels();
   bindEvents();
+  applyLanguage();
   showScreen("home");
 }
 
 function bindEvents() {
+  elements.languageToggle.addEventListener("click", toggleLanguage);
+
   elements.startTrigger.addEventListener("click", () => {
     unlockAudio();
     clearReturnTimers();
     hideOverlay();
     resetRound();
     showScreen("wheel");
-    setStatusNote(getReadyMessage());
+    setStatusNote(getReadyStatusKey());
     window.requestAnimationFrame(() => elements.wheelButton.focus());
   });
 
@@ -106,14 +177,45 @@ function bindEvents() {
   elements.overlayActionButton.addEventListener("click", handleOverlayAction);
 }
 
+function readLanguage() {
+  const savedLanguage = localStorage.getItem(STORAGE_KEYS.language);
+  return savedLanguage === "pt-BR" ? "pt-BR" : "en";
+}
+
+function toggleLanguage() {
+  state.language = state.language === "en" ? "pt-BR" : "en";
+  localStorage.setItem(STORAGE_KEYS.language, state.language);
+  applyLanguage();
+}
+
+function applyLanguage() {
+  document.documentElement.lang = state.language;
+  document.title = t("pageTitle");
+  elements.languageToggle.textContent = t("languageToggle");
+  elements.languageToggle.setAttribute("aria-label", t("languageToggleAria"));
+  elements.homeEyebrow.textContent = t("homeEyebrow");
+  elements.homeTitle.textContent = t("homeTitle");
+  elements.heroCopy.textContent = t("homeCopy");
+  elements.startTrigger.setAttribute("aria-label", t("startAria"));
+  elements.brandLogo.setAttribute("alt", t("logoAlt"));
+  elements.wheelEyebrow.textContent = t("wheelEyebrow");
+  elements.wheelTitle.textContent = t("wheelTitle");
+  elements.wheelButton.setAttribute("aria-label", t("spinAria"));
+  elements.wheelCenterLabel.textContent = t("spinLabel");
+  renderWheelLabels();
+  renderStatusNote();
+  renderOverlay();
+}
+
 function renderWheelLabels() {
   const fragment = document.createDocumentFragment();
 
   WHEEL_SEGMENTS.forEach((segment, index) => {
+    const labelLines = t(`segmentLabels.${segment.type}`);
     const label = document.createElement("div");
     label.className = "wheel-label";
     label.style.setProperty("--index", String(index));
-    label.innerHTML = segment.label.map((line) => `<span>${line}</span>`).join("");
+    label.innerHTML = labelLines.map((line) => `<span>${line}</span>`).join("");
     fragment.appendChild(label);
   });
 
@@ -133,7 +235,7 @@ function handleSpin() {
   );
 
   if (!candidates.length) {
-    setStatusNote("No available outcomes were found. Tap Play Again to reset the wheel.");
+    setStatusNote("status.noOutcomes");
     return;
   }
 
@@ -145,7 +247,7 @@ function handleSpin() {
 
   elements.wheelButton.classList.add("is-disabled");
   playSpinSound();
-  setStatusNote(`Spin ${state.spinCount}: the wheel is spinning...`);
+  setStatusNote("status.spinning", { count: state.spinCount });
 
   const desiredRotation = getDesiredRotationForSegment(chosen.index);
   const currentNormalized = normalizeAngle(state.currentRotation);
@@ -220,19 +322,18 @@ function handleSpinOutcome(outcome) {
     case "noLuck":
       playResultSound("lose");
       showFinalOverlay({
-        eyebrow: "Maybe next time",
-        title: "Not this time",
-        description: "Thanks for playing. Tap Play Again for a new spin.",
-        statusMessage: "Not this time.",
+        eyebrowKey: "overlay.maybeNextEyebrow",
+        titleKey: "overlay.noLuckTitle",
+        descriptionKey: "overlay.noLuckDescription",
       });
       break;
 
     case "replay":
       showOverlay({
-        eyebrow: "Bonus spin",
-        title: "SPIN AGAIN",
-        description: "You earned one extra spin. Tap the button below to spin again.",
-        actionLabel: "SPIN AGAIN",
+        eyebrowKey: "overlay.bonusEyebrow",
+        titleKey: "overlay.spinAgainTitle",
+        descriptionKey: "overlay.spinAgainDescription",
+        actionLabelKey: "overlay.spinAgainAction",
         actionMode: "replay",
       });
       break;
@@ -241,9 +342,9 @@ function handleSpinOutcome(outcome) {
       playResultSound("win");
       triggerCelebration();
       showFinalOverlay({
-        eyebrow: "Winner",
-        title: "YOU WON A SPECIAL GIFT",
-        description: "Take your prize with the Cirion team.",
+        eyebrowKey: "overlay.winnerEyebrow",
+        titleKey: "overlay.specialTitle",
+        descriptionKey: "overlay.specialDescription",
       });
       break;
 
@@ -252,9 +353,9 @@ function handleSpinOutcome(outcome) {
       playResultSound("win");
       triggerCelebration();
       showFinalOverlay({
-        eyebrow: "Winner",
-        title: "YOU WON AN ALEXA",
-        description: "Take your prize with the Cirion team.",
+        eyebrowKey: "overlay.winnerEyebrow",
+        titleKey: "overlay.alexaTitle",
+        descriptionKey: "overlay.alexaDescription",
       });
       break;
 
@@ -263,28 +364,41 @@ function handleSpinOutcome(outcome) {
   }
 }
 
-function showFinalOverlay({ eyebrow, title, description }) {
+function showFinalOverlay({ eyebrowKey, titleKey, descriptionKey }) {
   showOverlay({
-    eyebrow,
-    title,
-    description,
-    actionLabel: "PLAY AGAIN",
+    eyebrowKey,
+    titleKey,
+    descriptionKey,
+    actionLabelKey: "overlay.playAgainAction",
     actionMode: "playAgain",
   });
   scheduleReturnHome();
 }
 
-function showOverlay({ eyebrow, title, description, actionLabel, actionMode }) {
+function showOverlay(config) {
+  state.overlayConfig = config;
   elements.overlay.hidden = false;
-  elements.overlayEyebrow.textContent = eyebrow;
-  elements.overlayTitle.textContent = title;
-  elements.overlayDescription.textContent = description;
+  renderOverlay();
+}
+
+function renderOverlay() {
+  if (!state.overlayConfig) {
+    elements.overlayEyebrow.textContent = t("overlay.defaultEyebrow");
+    elements.overlayTitle.textContent = t("overlay.defaultTitle");
+    elements.overlayDescription.textContent = "";
+    return;
+  }
+
+  elements.overlayEyebrow.textContent = t(state.overlayConfig.eyebrowKey);
+  elements.overlayTitle.textContent = t(state.overlayConfig.titleKey);
+  elements.overlayDescription.textContent = t(state.overlayConfig.descriptionKey);
   elements.overlayActionButton.hidden = false;
-  elements.overlayActionButton.textContent = actionLabel;
-  elements.overlayActionButton.dataset.mode = actionMode;
+  elements.overlayActionButton.textContent = t(state.overlayConfig.actionLabelKey);
+  elements.overlayActionButton.dataset.mode = state.overlayConfig.actionMode;
 }
 
 function hideOverlay() {
+  state.overlayConfig = null;
   elements.overlay.hidden = true;
   elements.overlayActionButton.hidden = true;
   elements.overlayActionButton.textContent = "";
@@ -359,20 +473,22 @@ function showScreen(screenName) {
   });
 }
 
-function setStatusNote(message) {
+function setStatusNote(key, params = {}) {
+  state.statusNoteKey = key;
+  state.statusNoteParams = params;
+  renderStatusNote();
+}
+
+function renderStatusNote() {
   if (!elements.statusNote) {
     return;
   }
 
-  elements.statusNote.textContent = message;
+  elements.statusNote.textContent = t(state.statusNoteKey, state.statusNoteParams);
 }
 
-function getReadyMessage(prefix = "Tap Spin to play.") {
-  if (!isAlexaAvailable()) {
-    return `${prefix} The Alexa of the Day has already been claimed.`;
-  }
-
-  return prefix;
+function getReadyStatusKey() {
+  return isAlexaAvailable() ? "status.ready" : "status.readyNoAlexa";
 }
 
 function getTodayKey() {
@@ -537,6 +653,22 @@ function playSound(sound) {
   sound.pause();
   sound.currentTime = 0;
   sound.play().catch(() => {});
+}
+
+function t(key, params = {}) {
+  const value = key.split(".").reduce((currentValue, part) => currentValue?.[part], COPY[state.language]);
+
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return Object.entries(params).reduce((text, [param, replacement]) => {
+    return text.replaceAll(`{${param}}`, String(replacement));
+  }, value);
 }
 
 init();
