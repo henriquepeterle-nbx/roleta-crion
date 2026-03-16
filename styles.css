@@ -14,7 +14,7 @@
   --app-padding: clamp(18px, 3vw, 36px);
   --floating-ui-offset: calc(84px + env(safe-area-inset-bottom, 0px));
   --keyboard-offset: 0px;
-  --wheel-size: clamp(360px, min(82vw, calc(100dvh - 140px)), 840px);
+  --wheel-size: clamp(400px, min(86vw, calc(100dvh - 110px)), 900px);
   font-family: "Avenir Next", "Montserrat", "Segoe UI", sans-serif;
 }
 
@@ -382,7 +382,7 @@ body.keyboard-open .language-toggle {
   display: grid;
   justify-items: center;
   gap: clamp(10px, 1.5vh, 16px);
-  padding: clamp(14px, 2.2vw, 22px);
+  padding: clamp(14px, 2.2vw, 22px) clamp(14px, 2.2vw, 22px) clamp(28px, 4vh, 40px);
   color: var(--ink);
   background: #f8fbff;
 }
@@ -486,9 +486,9 @@ body.keyboard-open .language-toggle {
       #ff53ce 270deg 315deg,
       #4cd5ff 315deg 360deg
     );
-  border: 16px solid white;
+  border: 8px solid white;
   box-shadow:
-    inset 0 0 0 4px rgba(9, 21, 109, 0.15),
+    inset 0 0 0 2px rgba(9, 21, 109, 0.15),
     0 28px 60px rgba(9, 21, 109, 0.24);
 }
 
@@ -731,7 +731,7 @@ body.keyboard-open .language-toggle {
 @media (max-width: 720px) {
   :root {
     --floating-ui-offset: calc(76px + env(safe-area-inset-bottom, 0px));
-    --wheel-size: clamp(340px, min(98vw, calc(100dvh - 170px)), 660px);
+    --wheel-size: clamp(390px, min(100vw - 12px, calc(100dvh - 150px)), 760px);
   }
 
   .registration-shell,
@@ -763,6 +763,10 @@ body.keyboard-open .language-toggle {
   .wheel-stage-card h2 {
     font-size: clamp(1.8rem, 8vw, 2.6rem);
     line-height: 0.96;
+  }
+
+  .wheel-stage-card {
+    padding-bottom: 52px;
   }
 
   .wheel-pointer {
@@ -805,7 +809,7 @@ body.keyboard-open .language-toggle {
 
 @media (max-height: 760px) {
   :root {
-    --wheel-size: clamp(280px, min(78vw, calc(100dvh - 130px)), 640px);
+    --wheel-size: clamp(340px, min(84vw, calc(100dvh - 110px)), 720px);
   }
 
   body {
