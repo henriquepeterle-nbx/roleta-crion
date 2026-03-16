@@ -1,6 +1,7 @@
 const STORAGE_KEYS = {
   dailyAlexa: "cirion-wheel-daily-alexa",
 };
+const DEFAULT_SPIN_DURATION_MS = 3683;
 
 const WHEEL_SEGMENTS = [
   {
@@ -137,6 +138,7 @@ function handleSpin() {
   }
 
   const chosen = pickWeightedCandidate(candidates);
+  const spinDurationMs = getSpinDurationMs();
   state.spinCount += 1;
   state.isSpinning = true;
   state.activeOutcome = chosen.segment;
@@ -156,7 +158,7 @@ function handleSpin() {
   const extraTurns = 5 + Math.floor(Math.random() * 2);
   state.currentRotation += extraTurns * 360 + delta;
   elements.wheelRotor.style.transition =
-    "transform var(--spin-duration) cubic-bezier(0.14, 0.8, 0.18, 1)";
+    `transform ${spinDurationMs}ms cubic-bezier(0.14, 0.8, 0.18, 1)`;
   elements.wheelRotor.style.transform = `rotate(${state.currentRotation}deg)`;
 
   window.setTimeout(() => {
@@ -164,7 +166,7 @@ function handleSpin() {
     elements.wheelButton.classList.remove("is-disabled");
     stopSpinSound();
     handleSpinOutcome(chosen.segment);
-  }, 5500);
+  }, spinDurationMs);
 }
 
 function canLandOnSegment(segment) {
@@ -413,6 +415,16 @@ function normalizeAngle(angle) {
   return ((angle % 360) + 360) % 360;
 }
 
+function getSpinDurationMs() {
+  const spinDurationSeconds = state.sounds?.spin?.duration;
+
+  if (Number.isFinite(spinDurationSeconds) && spinDurationSeconds > 0) {
+    return Math.round(spinDurationSeconds * 1000);
+  }
+
+  return DEFAULT_SPIN_DURATION_MS;
+}
+
 function triggerCelebration() {
   clearCelebration();
   elements.celebration.hidden = false;
@@ -492,7 +504,7 @@ function createSoundBank() {
   const lose = new Audio("./assets/audio/lose.mp3");
 
   spin.preload = "auto";
-  spin.loop = true;
+  spin.loop = false;
   win.preload = "auto";
   lose.preload = "auto";
 
