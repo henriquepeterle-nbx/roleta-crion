@@ -436,7 +436,10 @@ function renderWheelLabels() {
     const label = document.createElement("div");
     label.className = "wheel-label";
     label.style.setProperty("--index", String(index));
-    label.innerHTML = labelLines.map((line) => `<span>${line}</span>`).join("");
+    const inner = document.createElement("div");
+    inner.className = "wheel-label__inner";
+    inner.innerHTML = labelLines.map((line) => `<span>${line}</span>`).join("");
+    label.appendChild(inner);
     fragment.appendChild(label);
   });
 
