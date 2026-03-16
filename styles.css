@@ -262,7 +262,7 @@ body.keyboard-open .language-toggle {
 }
 
 .field-grid--phone {
-  grid-template-columns: minmax(120px, 0.36fr) minmax(0, 0.64fr);
+  grid-template-columns: minmax(96px, 118px) minmax(0, 1fr);
 }
 
 .field {
@@ -496,23 +496,23 @@ body.keyboard-open .language-toggle {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: clamp(78px, calc(var(--wheel-size) * 0.155), 112px);
+  width: clamp(64px, calc(var(--wheel-size) * 0.125), 92px);
   display: grid;
-  gap: 4px;
+  gap: 3px;
   justify-items: center;
   text-align: center;
   transform:
     translate(-50%, -50%)
     rotate(calc(var(--index) * var(--segment-size)))
-    translateY(calc(-1 * clamp(168px, calc(var(--wheel-size) * 0.43), 326px)));
+    translateY(calc(-1 * clamp(184px, calc(var(--wheel-size) * 0.455), 348px)));
 }
 
 .wheel-label span {
   display: block;
   color: white;
-  font-size: clamp(0.65rem, 0.82vw, 0.78rem);
+  font-size: clamp(0.6rem, 0.72vw, 0.72rem);
   font-weight: 800;
-  line-height: 1.08;
+  line-height: 1.04;
   text-transform: uppercase;
   text-shadow: 0 2px 8px rgba(4, 9, 39, 0.36);
 }
