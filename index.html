@@ -15,15 +15,17 @@
 
     <main class="app-shell">
       <section class="screen start-screen screen--active" id="homeScreen" aria-labelledby="homeTitle">
-        <button class="start-shell" id="startButton" type="button">
-          <img
-            id="homeLogo"
-            class="brand-logo brand-logo--hero"
-            src="./assets/logo-color.png"
-            alt="Cirion logo"
-          />
-          <span class="start-shell__prompt" id="homeTitle">Tap to Start</span>
-        </button>
+        <div class="start-shell">
+          <button class="start-logo-button" id="startButton" type="button" aria-labelledby="homeTitle">
+            <img
+              id="homeLogo"
+              class="brand-logo brand-logo--hero"
+              src="./assets/logo-color.png"
+              alt="Cirion logo"
+            />
+          </button>
+          <p class="start-shell__prompt" id="homeTitle">Tap to Start</p>
+        </div>
       </section>
 
       <section
