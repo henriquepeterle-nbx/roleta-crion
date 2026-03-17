@@ -6,7 +6,7 @@
     <title>Cirion Prize Wheel</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body data-screen="form">
+  <body data-screen="home">
     <div class="page-backdrop" aria-hidden="true"></div>
 
     <button class="language-toggle" id="languageToggle" type="button" aria-label="">
@@ -14,8 +14,20 @@
     </button>
 
     <main class="app-shell">
+      <section class="screen start-screen screen--active" id="homeScreen" aria-labelledby="homeTitle">
+        <button class="start-shell" id="startButton" type="button">
+          <img
+            id="homeLogo"
+            class="brand-logo brand-logo--hero"
+            src="./assets/logo-color.png"
+            alt="Cirion logo"
+          />
+          <span class="start-shell__prompt" id="homeTitle">Tap to Start</span>
+        </button>
+      </section>
+
       <section
-        class="screen screen--active registration-screen"
+        class="screen registration-screen"
         id="formScreen"
         aria-labelledby="formTitle"
       >

@@ -99,6 +99,7 @@ body.keyboard-open .language-toggle {
 
 .language-toggle:hover,
 .language-toggle:focus-visible,
+.start-shell:focus-visible,
 .wheel:focus-visible,
 .primary-button:focus-visible,
 .keyboard-key:focus-visible,
@@ -175,7 +176,49 @@ body.keyboard-open .language-toggle {
   width: clamp(152px, 17vw, 220px);
 }
 
+.brand-logo--hero {
+  width: clamp(240px, 34vw, 460px);
+}
+
+.start-screen {
+  width: min(1120px, 100%);
+}
+
+.start-shell {
+  width: min(1120px, 100%);
+  min-height: min(72dvh, 760px);
+  display: grid;
+  place-items: center;
+  gap: 22px;
+  border: 0;
+  border-radius: var(--radius-xl);
+  padding: clamp(32px, 6vw, 68px);
+  color: white;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(72, 216, 255, 0.16), transparent 26%),
+    linear-gradient(135deg, rgba(1, 4, 16, 0.9), rgba(8, 17, 72, 0.9) 58%, rgba(28, 78, 255, 0.76));
+  box-shadow: var(--card-shadow);
+}
+
+.start-shell__prompt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 68px;
+  min-width: 220px;
+  padding: 0 30px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+}
+
 .registration-shell,
+.start-shell,
 .wheel-stage-card,
 .overlay-card,
 .keyboard-shell {
@@ -735,6 +778,7 @@ body.keyboard-open .language-toggle {
   }
 
   .registration-shell,
+  .start-shell,
   .wheel-stage-card,
   .overlay-card,
   .keyboard-shell {
@@ -743,6 +787,22 @@ body.keyboard-open .language-toggle {
 
   .registration-header {
     min-height: 76px;
+  }
+
+  .start-shell {
+    min-height: min(62dvh, 560px);
+    gap: 18px;
+    padding: 28px 22px;
+  }
+
+  .brand-logo--hero {
+    width: clamp(200px, 58vw, 360px);
+  }
+
+  .start-shell__prompt {
+    min-height: 60px;
+    min-width: 188px;
+    font-size: clamp(1rem, 4vw, 1.22rem);
   }
 
   .registration-copy {

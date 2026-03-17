@@ -50,6 +50,10 @@ const COPY = {
     pageTitle: "Cirion Prize Wheel",
     languageToggle: "PT-BR",
     languageToggleAria: "Switch language to Portuguese (Brazil)",
+    home: {
+      logoAlt: "Cirion logo",
+      title: "Tap to Start",
+    },
     form: {
       logoAlt: "Cirion logo",
       eyebrow: "Cirion interactive experience",
@@ -164,6 +168,10 @@ const COPY = {
     pageTitle: "Roleta de Prêmios Cirion",
     languageToggle: "EN",
     languageToggleAria: "Mudar idioma para inglês",
+    home: {
+      logoAlt: "Logo da Cirion",
+      title: "Toque para começar",
+    },
     form: {
       logoAlt: "Logo da Cirion",
       eyebrow: "Experiência interativa Cirion",
@@ -277,7 +285,7 @@ const COPY = {
 };
 
 const state = {
-  screen: "form",
+  screen: "home",
   language: readLanguage(),
   spinCount: 0,
   currentRotation: 0,
@@ -300,10 +308,14 @@ const state = {
 
 const elements = {
   screens: {
+    home: document.querySelector("#homeScreen"),
     form: document.querySelector("#formScreen"),
     wheel: document.querySelector("#wheelScreen"),
   },
   languageToggle: document.querySelector("#languageToggle"),
+  homeLogo: document.querySelector("#homeLogo"),
+  startButton: document.querySelector("#startButton"),
+  homeTitle: document.querySelector("#homeTitle"),
   formLogo: document.querySelector("#formLogo"),
   formTitle: document.querySelector("#formTitle"),
   formLead: document.querySelector("#formLead"),
@@ -353,11 +365,14 @@ function init() {
   renderReasonOptions();
   bindEvents();
   applyLanguage();
-  showScreen("form");
+  showScreen("home");
 }
 
 function bindEvents() {
   elements.languageToggle.addEventListener("click", toggleLanguage);
+  elements.startButton.addEventListener("click", () => {
+    showScreen("form");
+  });
 
   elements.leadForm.addEventListener("submit", handleLeadSubmit);
   elements.leadForm.addEventListener("input", handleFormInput);
@@ -396,6 +411,8 @@ function applyLanguage() {
   document.title = t("pageTitle");
   elements.languageToggle.textContent = t("languageToggle");
   elements.languageToggle.setAttribute("aria-label", t("languageToggleAria"));
+  elements.homeLogo.setAttribute("alt", t("home.logoAlt"));
+  elements.homeTitle.textContent = t("home.title");
   elements.formLogo.setAttribute("alt", t("form.logoAlt"));
   elements.formTitle.textContent = t("form.title");
   elements.formLead.textContent = t("form.lead");
