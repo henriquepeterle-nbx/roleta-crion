@@ -12,6 +12,12 @@ const REASON_VALUES = {
   both: "Both",
   none: "None",
 };
+const OUTCOME_PROBABILITIES = {
+  special: 0.15,
+  replay: 0.2,
+  alexa: 0.05,
+  noLuck: 0.6,
+};
 const COUNTRY_DIAL_CODES = {
   BR: "+55",
   AR: "+54",
@@ -1160,16 +1166,18 @@ function canLandOnSegment(segment) {
 }
 
 function pickWeightedCandidate(candidates) {
+  const availableTypeCounts = countAvailableOutcomeTypes(candidates);
+  const outcomeProbabilities = getOutcomeProbabilities(availableTypeCounts);
   let totalWeight = 0;
 
   for (const candidate of candidates) {
-    totalWeight += getSegmentWeight(candidate.segment);
+    totalWeight += getSegmentWeight(candidate.segment, availableTypeCounts, outcomeProbabilities);
   }
 
   let threshold = Math.random() * totalWeight;
 
   for (const candidate of candidates) {
-    threshold -= getSegmentWeight(candidate.segment);
+    threshold -= getSegmentWeight(candidate.segment, availableTypeCounts, outcomeProbabilities);
 
     if (threshold <= 0) {
       return candidate;
@@ -1179,18 +1187,43 @@ function pickWeightedCandidate(candidates) {
   return candidates[candidates.length - 1];
 }
 
-function getSegmentWeight(segment) {
-  switch (segment.type) {
-    case "special":
-      return 0.8;
-    case "replay":
-      return 1.2;
-    case "alexa":
-      return 0.35;
-    case "noLuck":
-    default:
-      return 2.2;
+function countAvailableOutcomeTypes(candidates) {
+  return candidates.reduce(
+    (counts, candidate) => {
+      counts[candidate.segment.type] = (counts[candidate.segment.type] || 0) + 1;
+      return counts;
+    },
+    { special: 0, replay: 0, alexa: 0, noLuck: 0 },
+  );
+}
+
+function getOutcomeProbabilities(availableTypeCounts) {
+  const probabilities = { ...OUTCOME_PROBABILITIES };
+
+  if (availableTypeCounts.alexa === 0) {
+    probabilities.replay += probabilities.alexa;
+    probabilities.alexa = 0;
   }
+
+  if (availableTypeCounts.replay === 0) {
+    const replayShare = probabilities.replay;
+    probabilities.replay = 0;
+    probabilities.special += replayShare * 0.2;
+    probabilities.noLuck += replayShare * 0.8;
+  }
+
+  return probabilities;
+}
+
+function getSegmentWeight(segment, availableTypeCounts, outcomeProbabilities) {
+  const availableCount = availableTypeCounts[segment.type] || 0;
+  const totalTypeProbability = outcomeProbabilities[segment.type] || 0;
+
+  if (!availableCount || totalTypeProbability <= 0) {
+    return 0;
+  }
+
+  return totalTypeProbability / availableCount;
 }
 
 function handleSpinOutcome(outcome) {
