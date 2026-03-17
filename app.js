@@ -151,6 +151,7 @@ const COPY = {
       specialDescription: "Please speak with the Cirion team to receive your prize.",
       alexaTitle: "YOU WON AN ALEXA",
       alexaDescription: "Please speak with the Cirion team to receive your prize.",
+      autoReturn: "Returning to start in {seconds}s.",
       newEntryAction: "NEW GAME",
       spinAgainAction: "SPIN AGAIN",
     },
@@ -269,6 +270,7 @@ const COPY = {
       specialDescription: "Fale com a equipe da Cirion para retirar o seu prêmio.",
       alexaTitle: "VOCÊ GANHOU UMA ALEXA",
       alexaDescription: "Fale com a equipe da Cirion para retirar o seu prêmio.",
+      autoReturn: "Voltando ao início em {seconds}s.",
       newEntryAction: "NOVO JOGO",
       spinAgainAction: "GIRAR DE NOVO",
     },
@@ -302,6 +304,8 @@ const state = {
   statusNoteParams: {},
   celebrationTimer: null,
   returnTimer: null,
+  returnCountdownTimer: null,
+  returnCountdownSeconds: 0,
   audioUnlocked: false,
   sounds: null,
   lastLeadId: null,
@@ -356,6 +360,7 @@ const elements = {
   overlayEyebrow: document.querySelector("#overlayEyebrow"),
   overlayTitle: document.querySelector("#overlayTitle"),
   overlayDescription: document.querySelector("#overlayDescription"),
+  overlayCountdown: document.querySelector("#overlayCountdown"),
   overlayActionButton: document.querySelector("#overlayActionButton"),
   celebration: document.querySelector("#celebration"),
   virtualKeyboard: document.querySelector("#virtualKeyboard"),
@@ -1277,7 +1282,7 @@ function showFinalOverlay({ eyebrowKey, titleKey, descriptionKey }) {
     actionLabelKey: "overlay.newEntryAction",
     actionMode: "newEntry",
   });
-  scheduleReturnToForm();
+  scheduleReturnToHome();
 }
 
 function showOverlay(config) {
@@ -1291,12 +1296,20 @@ function renderOverlay() {
     elements.overlayEyebrow.textContent = t("overlay.defaultEyebrow");
     elements.overlayTitle.textContent = t("overlay.defaultTitle");
     elements.overlayDescription.textContent = "";
+    elements.overlayCountdown.hidden = true;
+    elements.overlayCountdown.textContent = "";
     return;
   }
 
   elements.overlayEyebrow.textContent = t(state.overlayConfig.eyebrowKey);
   elements.overlayTitle.textContent = t(state.overlayConfig.titleKey);
   elements.overlayDescription.textContent = t(state.overlayConfig.descriptionKey);
+  const showCountdown =
+    state.overlayConfig.actionMode === "newEntry" && state.returnCountdownSeconds > 0;
+  elements.overlayCountdown.hidden = !showCountdown;
+  elements.overlayCountdown.textContent = showCountdown
+    ? t("overlay.autoReturn", { seconds: state.returnCountdownSeconds })
+    : "";
   elements.overlayActionButton.hidden = false;
   elements.overlayActionButton.textContent = t(state.overlayConfig.actionLabelKey);
   elements.overlayActionButton.dataset.mode = state.overlayConfig.actionMode;
@@ -1308,6 +1321,8 @@ function hideOverlay() {
   elements.overlayActionButton.hidden = true;
   elements.overlayActionButton.textContent = "";
   elements.overlayActionButton.dataset.mode = "";
+  elements.overlayCountdown.hidden = true;
+  elements.overlayCountdown.textContent = "";
 }
 
 function handleOverlayAction() {
@@ -1326,11 +1341,17 @@ function handleOverlayAction() {
   finalizeRoundAndReturn();
 }
 
-function scheduleReturnToForm() {
+function scheduleReturnToHome() {
   clearReturnTimer();
+  state.returnCountdownSeconds = 10;
+  renderOverlay();
+  state.returnCountdownTimer = window.setInterval(() => {
+    state.returnCountdownSeconds = Math.max(0, state.returnCountdownSeconds - 1);
+    renderOverlay();
+  }, 1000);
   state.returnTimer = window.setTimeout(() => {
     finalizeRoundAndReturn();
-  }, 5000);
+  }, 10000);
 }
 
 function clearReturnTimer() {
@@ -1338,6 +1359,13 @@ function clearReturnTimer() {
     window.clearTimeout(state.returnTimer);
     state.returnTimer = null;
   }
+
+  if (state.returnCountdownTimer) {
+    window.clearInterval(state.returnCountdownTimer);
+    state.returnCountdownTimer = null;
+  }
+
+  state.returnCountdownSeconds = 0;
 }
 
 function finalizeRoundAndReturn() {
@@ -1347,7 +1375,7 @@ function finalizeRoundAndReturn() {
   resetRound();
   clearLeadForm();
   closeKeyboard({ blur: true });
-  showScreen("form");
+  showScreen("home");
 }
 
 function clearLeadForm() {

@@ -641,6 +641,15 @@ body[data-screen="home"] .app-shell {
   line-height: 1.5;
 }
 
+.overlay-countdown {
+  margin-top: 18px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.02em;
+  color: rgba(13, 18, 61, 0.88);
+}
+
 .overlay-actions {
   display: flex;
   justify-content: center;
