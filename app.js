@@ -14,8 +14,8 @@ const REASON_VALUES = {
 };
 const OUTCOME_PROBABILITIES = {
   special: 0.15,
-  replay: 0.2,
-  alexa: 0.05,
+  replay: 0.25,
+  alexa: 0,
   noLuck: 0.6,
 };
 const COUNTRY_DIAL_CODES = {
@@ -37,6 +37,7 @@ const FORM_FIELD_ORDER = [
   "jobTitle",
   "areaCode",
   "phoneNumber",
+  "reason",
   "privacyAccepted",
 ];
 
@@ -564,6 +565,11 @@ function handleFormChange(event) {
     renderFormErrors();
   }
 
+  if (target.id === "reason" && state.formErrors.reason) {
+    delete state.formErrors.reason;
+    renderFormErrors();
+  }
+
   if (target.id === "country") {
     fillAreaCodeFromCountry(target.value);
 
@@ -679,6 +685,10 @@ function validateForm(values) {
     errors.phoneNumber = { type: "required", fieldKey: "form.fieldNames.phoneNumber" };
   } else if (!/^\d{7,15}$/.test(values.phoneNumber)) {
     errors.phoneNumber = { type: "phoneNumber" };
+  }
+
+  if (!values.reason) {
+    errors.reason = { type: "required", fieldKey: "form.fieldNames.reason" };
   }
 
   if (!values.privacyAccepted) {
